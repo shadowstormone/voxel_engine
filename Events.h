@@ -5,7 +5,8 @@
 
 typedef unsigned int uint;
 
-class Events {
+class Events
+{
 public:
 	static bool* _keys;
 	static uint* _frames;

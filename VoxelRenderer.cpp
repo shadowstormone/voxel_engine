@@ -36,23 +36,30 @@
 
 int chunk_attrs[] = {3,2,4, 0};
 
-VoxelRenderer::VoxelRenderer(size_t capacity) : capacity(capacity) {
+VoxelRenderer::VoxelRenderer(size_t capacity) : capacity(capacity)
+{
 	buffer = new float[capacity * VERTEX_SIZE * 6];
 }
 
-VoxelRenderer::~VoxelRenderer(){
+VoxelRenderer::~VoxelRenderer()
+{
 	delete[] buffer;
 }
 
-Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
+Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks)
+{
 	size_t index = 0;
-	for (int y = 0; y < CHUNK_H; y++){
-		for (int z = 0; z < CHUNK_D; z++){
-			for (int x = 0; x < CHUNK_W; x++){
+	for (int y = 0; y < CHUNK_H; y++)
+	{
+		for (int z = 0; z < CHUNK_D; z++)
+		{
+			for (int x = 0; x < CHUNK_W; x++)
+			{
 				voxel vox = chunk->voxels[(y * CHUNK_D + z) * CHUNK_W + x];
 				unsigned int id = vox.id;
 
-				if (!id){
+				if (!id)
+				{
 					continue;
 				}
 
@@ -62,7 +69,8 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 				Block* block = Block::blocks[id];
 				unsigned char group = block->drawGroup;
 
-				if (!IS_BLOCKED(x,y+1,z,group)){
+				if (!IS_BLOCKED(x,y+1,z,group))
+				{
 					l = 1.0f;
 
 					SETUP_UV(block->textureFaces[3]);
@@ -100,7 +108,8 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 					VERTEX(index, x+0.5f, y+0.5f, z+0.5f, u1,v2, lr2, lg2, lb2, ls2);
 					VERTEX(index, x+0.5f, y+0.5f, z-0.5f, u1,v1, lr3, lg3, lb3, ls3);
 				}
-				if (!IS_BLOCKED(x,y-1,z,group)){
+				if (!IS_BLOCKED(x,y-1,z,group))
+				{
 					l = 0.75f;
 
 					SETUP_UV(block->textureFaces[2]);
@@ -139,7 +148,8 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 					VERTEX(index, x+0.5f, y-0.5f, z+0.5f, u2,v2, lr1,lg1,lb1,ls1);
 				}
 
-				if (!IS_BLOCKED(x+1,y,z,group)){
+				if (!IS_BLOCKED(x+1,y,z,group))
+				{
 					l = 0.95f;
 
 					SETUP_UV(block->textureFaces[1]);
@@ -177,7 +187,9 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 					VERTEX(index, x+0.5f, y+0.5f, z+0.5f, u1,v2, lr2,lg2,lb2,ls2);
 					VERTEX(index, x+0.5f, y-0.5f, z+0.5f, u1,v1, lr3,lg3,lb3,ls3);
 				}
-				if (!IS_BLOCKED(x-1,y,z,group)){
+
+				if (!IS_BLOCKED(x-1,y,z,group))
+				{
 					l = 0.85f;
 
 					SETUP_UV(block->textureFaces[0]);
@@ -216,7 +228,8 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 					VERTEX(index, x-0.5f, y+0.5f, z+0.5f, u2,v2, lr1,lg1,lb1,ls1);
 				}
 
-				if (!IS_BLOCKED(x,y,z+1,group)){
+				if (!IS_BLOCKED(x,y,z+1,group))
+				{
 					l = 0.9f;
 
 					SETUP_UV(block->textureFaces[5]);
@@ -254,7 +267,9 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks){
 					VERTEX(index, x+0.5f, y-0.5f, z+0.5f, u2,v1, lr3,lg3,lb3,ls3);
 					VERTEX(index, x+0.5f, y+0.5f, z+0.5f, u2,v2, lr1,lg1,lb1,ls1);
 				}
-				if (!IS_BLOCKED(x,y,z-1,group)){
+
+				if (!IS_BLOCKED(x,y,z-1,group))
+				{
 					l = 0.8f;
 
 					SETUP_UV(block->textureFaces[4]);

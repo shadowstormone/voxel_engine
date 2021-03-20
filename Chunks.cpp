@@ -10,14 +10,18 @@ using namespace glm;
 #include <math.h>
 #include <limits.h>
 
-Chunks::Chunks(int w, int h, int d) : w(w), h(h), d(d){
+Chunks::Chunks(int w, int h, int d) : w(w), h(h), d(d)
+{
 	volume = w*h*d;
 	chunks = new Chunk*[volume];
 
 	int index = 0;
-	for (int y = 0; y < h; y++){
-		for (int z = 0; z < d; z++){
-			for (int x = 0; x < w; x++, index++){
+	for (int y = 0; y < h; y++)
+	{
+		for (int z = 0; z < d; z++)
+		{
+			for (int x = 0; x < w; x++, index++)
+			{
 				Chunk* chunk = new Chunk(x,y,z);
 				chunks[index] = chunk;
 			}
@@ -25,14 +29,17 @@ Chunks::Chunks(int w, int h, int d) : w(w), h(h), d(d){
 	}
 }
 
-Chunks::~Chunks(){
-	for (size_t i = 0; i < volume; i++){
+Chunks::~Chunks()
+{
+	for (size_t i = 0; i < volume; i++)
+	{
 		delete chunks[i];
 	}
 	delete[] chunks;
 }
 
-voxel* Chunks::get(int x, int y, int z){
+voxel* Chunks::get(int x, int y, int z)
+{
 	int cx = x / CHUNK_W;
 	int cy = y / CHUNK_H;
 	int cz = z / CHUNK_D;
@@ -48,7 +55,8 @@ voxel* Chunks::get(int x, int y, int z){
 	return &chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx];
 }
 
-unsigned char Chunks::getLight(int x, int y, int z, int channel){
+unsigned char Chunks::getLight(int x, int y, int z, int channel)
+{
 	int cx = x / CHUNK_W;
 	int cy = y / CHUNK_H;
 	int cz = z / CHUNK_D;
@@ -64,7 +72,8 @@ unsigned char Chunks::getLight(int x, int y, int z, int channel){
 	return chunk->lightmap->get(lx,ly,lz, channel);
 }
 
-Chunk* Chunks::getChunkByVoxel(int x, int y, int z){
+Chunk* Chunks::getChunkByVoxel(int x, int y, int z)
+{
 	int cx = x / CHUNK_W;
 	int cy = y / CHUNK_H;
 	int cz = z / CHUNK_D;
@@ -76,13 +85,15 @@ Chunk* Chunks::getChunkByVoxel(int x, int y, int z){
 	return chunks[(cy * d + cz) * w + cx];
 }
 
-Chunk* Chunks::getChunk(int x, int y, int z){
+Chunk* Chunks::getChunk(int x, int y, int z)
+{
 	if (x < 0 || y < 0 || z < 0 || x >= w || y >= h || z >= d)
 		return nullptr;
 	return chunks[(y * d + z) * w + x];
 }
 
-void Chunks::set(int x, int y, int z, int id){
+void Chunks::set(int x, int y, int z, int id)
+{
 	int cx = x / CHUNK_W;
 	int cy = y / CHUNK_H;
 	int cz = z / CHUNK_D;
@@ -107,7 +118,8 @@ void Chunks::set(int x, int y, int z, int id){
 	if (lz == CHUNK_D-1 && (chunk = getChunk(cx, cy, cz+1))) chunk->modified = true;
 }
 
-voxel* Chunks::rayCast(vec3 a, vec3 dir, float maxDist, vec3& end, vec3& norm, vec3& iend) {
+voxel* Chunks::rayCast(vec3 a, vec3 dir, float maxDist, vec3& end, vec3& norm, vec3& iend)
+{
 	float px = a.x;
 	float py = a.y;
 	float pz = a.z;
@@ -141,9 +153,11 @@ voxel* Chunks::rayCast(vec3 a, vec3 dir, float maxDist, vec3& end, vec3& norm, v
 
 	int steppedIndex = -1;
 
-	while (t <= maxDist){
+	while (t <= maxDist)
+	{
 		voxel* voxel = get(ix, iy, iz);
-		if (voxel == nullptr || voxel->id){
+		if (voxel == nullptr || voxel->id)
+		{
 			end.x = px + t * dx;
 			end.y = py + t * dy;
 			end.z = pz + t * dz;
@@ -158,25 +172,31 @@ voxel* Chunks::rayCast(vec3 a, vec3 dir, float maxDist, vec3& end, vec3& norm, v
 			if (steppedIndex == 2) norm.z = -stepz;
 			return voxel;
 		}
-		if (txMax < tyMax) {
-			if (txMax < tzMax) {
+		if (txMax < tyMax)
+		{
+			if (txMax < tzMax)
+			{
 				ix += stepx;
 				t = txMax;
 				txMax += txDelta;
 				steppedIndex = 0;
-			} else {
+			} else
+			{
 				iz += stepz;
 				t = tzMax;
 				tzMax += tzDelta;
 				steppedIndex = 2;
 			}
-		} else {
-			if (tyMax < tzMax) {
+		} else
+		{
+			if (tyMax < tzMax)
+			{
 				iy += stepy;
 				t = tyMax;
 				tyMax += tyDelta;
 				steppedIndex = 1;
-			} else {
+			} else
+			{
 				iz += stepz;
 				t = tzMax;
 				tzMax += tzDelta;
@@ -195,21 +215,27 @@ voxel* Chunks::rayCast(vec3 a, vec3 dir, float maxDist, vec3& end, vec3& norm, v
 	return nullptr;
 }
 
-void Chunks::write(unsigned char* dest) {
+void Chunks::write(unsigned char* dest)
+{
 	size_t index = 0;
-	for (size_t i = 0; i < volume; i++){
+	for (size_t i = 0; i < volume; i++)
+	{
 		Chunk* chunk = chunks[i];
-		for (size_t j = 0; j < CHUNK_VOL; j++, index++){
+		for (size_t j = 0; j < CHUNK_VOL; j++, index++)
+		{
 			dest[index] = chunk->voxels[j].id;
 		}
 	}
 }
 
-void Chunks::read(unsigned char* source) {
+void Chunks::read(unsigned char* source)
+{
 	size_t index = 0;
-	for (size_t i = 0; i < volume; i++){
+	for (size_t i = 0; i < volume; i++)
+	{
 		Chunk* chunk = chunks[i];
-		for (size_t j = 0; j < CHUNK_VOL; j++, index++){
+		for (size_t j = 0; j < CHUNK_VOL; j++, index++)
+		{
 			chunk->voxels[j].id = source[index];
 		}
 		chunk->modified = true;

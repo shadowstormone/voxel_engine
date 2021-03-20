@@ -9,7 +9,8 @@ using namespace glm;
 class Chunk;
 class voxel;
 
-class Chunks {
+class Chunks
+{
 public:
 	Chunk** chunks;
 	size_t volume;

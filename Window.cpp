@@ -7,7 +7,8 @@ GLFWwindow* Window::window;
 int Window::width = 0;
 int Window::height = 0;
 
-int Window::initialize(int width, int height, const char* title){
+int Window::initialize(int width, int height, const char* title)
+{
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -16,7 +17,8 @@ int Window::initialize(int width, int height, const char* title){
 	//glfwWindowHint(GLFW_SAMPLES, 2);
 
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-	if (window == nullptr){
+	if (window == nullptr)
+	{
 		std::cerr << "Failed to create GLFW Window" << std::endl;
 		glfwTerminate();
 		return -1;
@@ -35,22 +37,27 @@ int Window::initialize(int width, int height, const char* title){
 	return 0;
 }
 
-void Window::setCursorMode(int mode){
+void Window::setCursorMode(int mode)
+{
 	glfwSetInputMode(window, GLFW_CURSOR, mode);
 }
 
-void Window::terminate(){
+void Window::terminate()
+{
 	glfwTerminate();
 }
 
-bool Window::isShouldClose(){
+bool Window::isShouldClose()
+{
 	return glfwWindowShouldClose(window);
 }
 
-void Window::setShouldClose(bool flag){
+void Window::setShouldClose(bool flag)
+{
 	glfwSetWindowShouldClose(window, flag);
 }
 
-void Window::swapBuffers(){
+void Window::swapBuffers()
+{
 	glfwSwapBuffers(window);
 }

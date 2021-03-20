@@ -3,7 +3,8 @@
 
 #include <string>
 
-class Texture {
+class Texture
+{
 public:
 	unsigned int id;
 	int width;

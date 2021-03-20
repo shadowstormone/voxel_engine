@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-struct voxel {
+struct voxel
+{
 	uint8_t id;
 };
 

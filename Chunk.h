@@ -9,7 +9,8 @@
 class voxel;
 class Lightmap;
 
-class Chunk {
+class Chunk
+{
 public:
 	int x,y,z;
 	voxel* voxels;

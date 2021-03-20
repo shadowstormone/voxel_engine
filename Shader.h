@@ -4,7 +4,8 @@
 #include <string>
 #include <glm/glm.hpp>
 
-class Shader {
+class Shader
+{
 public:
 	unsigned int id;
 

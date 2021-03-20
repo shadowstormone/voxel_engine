@@ -3,7 +3,8 @@
 
 #include <stdlib.h>
 
-class Mesh {
+class Mesh
+{
 	unsigned int vao;
 	unsigned int vbo;
 	size_t vertices;

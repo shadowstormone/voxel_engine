@@ -3,7 +3,8 @@
 
 struct GLFWwindow;
 
-class Window {
+class Window
+{
 public:
 	static int width;
 	static int height;

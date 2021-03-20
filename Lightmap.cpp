@@ -1,13 +1,16 @@
 #include "Lightmap.h"
 #include "Chunk.h"
 
-Lightmap::Lightmap(){
+Lightmap::Lightmap()
+{
 	map = new unsigned short[CHUNK_VOL];
-	for (unsigned int i = 0; i < CHUNK_VOL; i++){
+	for (unsigned int i = 0; i < CHUNK_VOL; i++)
+	{
 		map[i] = 0x0000;
 	}
 }
 
-Lightmap::~Lightmap(){
+Lightmap::~Lightmap()
+{
 	delete[] map;
 }

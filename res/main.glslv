@@ -10,7 +10,8 @@ out vec2 a_texCoord;
 uniform mat4 model;
 uniform mat4 projview;
 
-void main(){
+void main()
+{
 	a_color = vec4(v_light.r,v_light.g,v_light.b,1.0f);
 	a_texCoord = v_texCoord;
 	a_color.rgb += v_light.a;

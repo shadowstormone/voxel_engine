@@ -12,7 +12,8 @@
 
 class Mesh;
 
-class LineBatch {
+class LineBatch
+{
 	Mesh* mesh;
 	float* buffer;
 	size_t index;

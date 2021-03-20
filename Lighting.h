@@ -4,7 +4,8 @@
 class Chunks;
 class LightSolver;
 
-class Lighting {
+class Lighting
+{
 	static Chunks* chunks;
 	static LightSolver* solverR;
 	static LightSolver* solverG;

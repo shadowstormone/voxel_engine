@@ -12,14 +12,16 @@
 
 #define LB_VERTEX_SIZE (3+4)
 
-LineBatch::LineBatch(size_t capacity) : capacity(capacity) {
+LineBatch::LineBatch(size_t capacity) : capacity(capacity)
+{
 	int attrs[] = {3,4, 0};
 	buffer = new float[capacity * LB_VERTEX_SIZE * 2];
 	mesh = new Mesh(buffer, 0, attrs);
 	index = 0;
 }
 
-LineBatch::~LineBatch(){
+LineBatch::~LineBatch()
+{
 	delete[] buffer;
 	delete mesh;
 }
@@ -67,7 +69,8 @@ void LineBatch::box(float x, float y, float z, float w, float h, float d,
 	line(x+w, y+h, z-d, x+w, y+h, z+d, r,g,b,a);
 }
 
-void LineBatch::render(){
+void LineBatch::render()
+{
 	if (index == 0)
 		return;
 	mesh->reload(buffer, index / LB_VERTEX_SIZE);

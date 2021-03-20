@@ -5,14 +5,16 @@
 
 class Chunks;
 
-struct lightentry {
+struct lightentry
+{
 	int x;
 	int y;
 	int z;
 	unsigned char light;
 };
 
-class LightSolver {
+class LightSolver
+{
 	std::queue<lightentry> addqueue;
 	std::queue<lightentry> remqueue;
 	Chunks* chunks;

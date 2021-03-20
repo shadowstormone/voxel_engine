@@ -11,7 +11,8 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-class Camera {
+class Camera
+{
 	void updateVectors();
 public:
 	vec3 front;

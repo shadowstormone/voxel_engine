@@ -1,7 +1,8 @@
 #ifndef VOXELS_BLOCK_H_
 #define VOXELS_BLOCK_H_
 
-class Block {
+class Block
+{
 public:
 	static Block* blocks[256];
 

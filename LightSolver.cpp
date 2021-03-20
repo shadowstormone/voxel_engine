@@ -5,10 +5,12 @@
 #include "voxel.h"
 #include "Block.h"
 
-LightSolver::LightSolver(Chunks* chunks, int channel) : chunks(chunks), channel(channel) {
+LightSolver::LightSolver(Chunks* chunks, int channel) : chunks(chunks), channel(channel)
+{
 }
 
-void LightSolver::add(int x, int y, int z, int emission) {
+void LightSolver::add(int x, int y, int z, int emission)
+{
 	if (emission <= 1)
 		return;
 	lightentry entry;
@@ -23,17 +25,20 @@ void LightSolver::add(int x, int y, int z, int emission) {
 	chunk->lightmap->set(entry.x-chunk->x*CHUNK_W, entry.y-chunk->y*CHUNK_H, entry.z-chunk->z*CHUNK_D, channel, entry.light);
 }
 
-void LightSolver::add(int x, int y, int z) {
+void LightSolver::add(int x, int y, int z)
+{
 	add(x,y,z, chunks->getLight(x,y,z, channel));
 }
 
-void LightSolver::remove(int x, int y, int z) {
+void LightSolver::remove(int x, int y, int z)
+{
 	Chunk* chunk = chunks->getChunkByVoxel(x, y, z);
 	if (chunk == nullptr)
 		return;
 
 	int light = chunk->lightmap->get(x-chunk->x*CHUNK_W, y-chunk->y*CHUNK_H, z-chunk->z*CHUNK_D, channel);
-	if (light == 0){
+	if (light == 0)
+	{
 		return;
 	}
 
@@ -47,7 +52,8 @@ void LightSolver::remove(int x, int y, int z) {
 	chunk->lightmap->set(entry.x-chunk->x*CHUNK_W, entry.y-chunk->y*CHUNK_H, entry.z-chunk->z*CHUNK_D, channel, 0);
 }
 
-void LightSolver::solve(){
+void LightSolver::solve()
+{
 	const int coords[] = {
 			0, 0, 1,
 			0, 0,-1,
@@ -57,18 +63,22 @@ void LightSolver::solve(){
 		   -1, 0, 0
 	};
 
-	while (!remqueue.empty()){
+	while (!remqueue.empty())
+	{
 		lightentry entry = remqueue.front();
 		remqueue.pop();
 
-		for (size_t i = 0; i < 6; i++) {
+		for (size_t i = 0; i < 6; i++)
+		{
 			int x = entry.x+coords[i*3+0];
 			int y = entry.y+coords[i*3+1];
 			int z = entry.z+coords[i*3+2];
 			Chunk* chunk = chunks->getChunkByVoxel(x,y,z);
-			if (chunk) {
+			if (chunk)
+			{
 				int light = chunks->getLight(x,y,z, channel);
-				if (light != 0 && light == entry.light-1){
+				if (light != 0 && light == entry.light-1)
+				{
 					lightentry nentry;
 					nentry.x = x;
 					nentry.y = y;
@@ -78,7 +88,8 @@ void LightSolver::solve(){
 					chunk->lightmap->set(x-chunk->x*CHUNK_W, y-chunk->y*CHUNK_H, z-chunk->z*CHUNK_D, channel, 0);
 					chunk->modified = true;
 				}
-				else if (light >= entry.light){
+				else if (light >= entry.light)
+				{
 					lightentry nentry;
 					nentry.x = x;
 					nentry.y = y;
@@ -90,23 +101,27 @@ void LightSolver::solve(){
 		}
 	}
 
-	while (!addqueue.empty()){
+	while (!addqueue.empty())
+	{
 		lightentry entry = addqueue.front();
 		addqueue.pop();
 
 		if (entry.light <= 1)
 			continue;
 
-		for (size_t i = 0; i < 6; i++) {
+		for (size_t i = 0; i < 6; i++)
+		{
 			int x = entry.x+coords[i*3+0];
 			int y = entry.y+coords[i*3+1];
 			int z = entry.z+coords[i*3+2];
 			Chunk* chunk = chunks->getChunkByVoxel(x,y,z);
-			if (chunk) {
+			if (chunk)
+			{
 				int light = chunks->getLight(x,y,z, channel);
 				voxel* v = chunks->get(x,y,z);
 				Block* block = Block::blocks[v->id];
-				if (block->lightPassing && light+2 <= entry.light){
+				if (block->lightPassing && light+2 <= entry.light)
+				{
 					chunk->lightmap->set(x-chunk->x*CHUNK_W, y-chunk->y*CHUNK_H, z-chunk->z*CHUNK_D, channel, entry.light-1);
 					chunk->modified = true;
 					lightentry nentry;

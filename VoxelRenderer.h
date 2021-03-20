@@ -6,7 +6,8 @@
 class Mesh;
 class Chunk;
 
-class VoxelRenderer {
+class VoxelRenderer
+{
 	float* buffer;
 	size_t capacity;
 public:
