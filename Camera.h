@@ -1,14 +1,7 @@
-/*
- * Camera.h
- *
- *  Created on: Feb 11, 2020
- *      Author: MihailRis
- */
-
 #ifndef WINDOW_CAMERA_H_
 #define WINDOW_CAMERA_H_
-
 #include <glm/glm.hpp>
+
 using namespace glm;
 
 class Camera
@@ -18,6 +11,7 @@ public:
 	vec3 front;
 	vec3 up;
 	vec3 right;
+	vec3 down;
 
 	vec3 position;
 	float fov;

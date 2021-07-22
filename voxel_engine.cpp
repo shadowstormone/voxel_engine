@@ -32,17 +32,17 @@ using namespace glm;
 int WIDTH = 1280;
 int HEIGHT = 720;
 
-float vertices[] = 
+float vertices[] =
 {
-		// x    y
-	   -0.01f,-0.01f,
-	    0.01f, 0.01f,
+	// x    y
+   -0.01f,-0.01f,
+	0.01f, 0.01f,
 
-	   -0.01f, 0.01f,
-	    0.01f,-0.01f,
+   -0.01f, 0.01f,
+	0.01f,-0.01f,
 };
 
-int attrs[] = 
+int attrs[] =
 {
 		2,  0 //null terminator
 };
@@ -87,49 +87,49 @@ int main()
 
 	{
 		// AIR
-		Block* block = new Block(0,0);
+		Block* block = new Block(0, 0);
 		block->drawGroup = 1;
 		block->lightPassing = true;
 		Block::blocks[block->id] = block;
 
 		// STONE
-		block = new Block(1,2);
+		block = new Block(1, 2);
 		Block::blocks[block->id] = block;
 
 		// GRASS
-		block = new Block(2,4);
+		block = new Block(2, 4);
 		block->textureFaces[2] = 2;
 		block->textureFaces[3] = 1;
 		Block::blocks[block->id] = block;
 
 		// LAMP
-		block = new Block(3,3);
+		block = new Block(3, 3);
 		block->emission[0] = 10;
 		block->emission[1] = 0;
 		block->emission[2] = 0;
 		Block::blocks[block->id] = block;
 
 		// GLASS
-		block = new Block(4,5);
+		block = new Block(4, 5);
 		block->drawGroup = 2;
 		block->lightPassing = true;
 		Block::blocks[block->id] = block;
 
 		// GLASS
-		block = new Block(5,6);
+		block = new Block(5, 6);
 		Block::blocks[block->id] = block;
 	}
 
-	Chunks* chunks = new Chunks(16,16,16);
-	Mesh** meshes = new Mesh*[chunks->volume];
+	Chunks* chunks = new Chunks(16, 16, 16);
+	Mesh** meshes = new Mesh * [chunks->volume];
 	for (size_t i = 0; i < chunks->volume; i++)
 		meshes[i] = nullptr;
-	VoxelRenderer renderer(1024*1024*8);
+	VoxelRenderer renderer(1024 * 1024 * 8);
 	LineBatch* lineBatch = new LineBatch(4096);
 
 	Lighting::initialize(chunks);
 
-	glClearColor(0.0f,0.0f,0.0f,1);
+	glClearColor(0.0f, 0.0f, 0.0f, 1);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -137,7 +137,7 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Mesh* crosshair = new Mesh(vertices, 4, attrs);
-	Camera* camera = new Camera(vec3(96,16,96), radians(90.0f));
+	Camera* camera = new Camera(vec3(96, 16, 96), radians(90.0f));
 
 	float lastTime = glfwGetTime();
 	float delta = 0.0f;
@@ -166,8 +166,8 @@ int main()
 			Events::toogleCursor();
 		}
 
-		for (int i = 1; i < 6; i++){
-			if (Events::jpressed(GLFW_KEY_0+i))
+		for (int i = 1; i < 6; i++) {
+			if (Events::jpressed(GLFW_KEY_E + i))
 			{
 				choosenBlock = i;
 			}
@@ -208,6 +208,16 @@ int main()
 			camera->position -= camera->right * delta * speed;
 		}
 
+		if (Events::pressed(GLFW_KEY_SPACE))
+		{
+			camera->position += camera->up * delta * speed;
+		}
+		if (Events::pressed(GLFW_KEY_LEFT_SHIFT))
+		{
+			camera->position -= camera->down* delta * speed;
+		}
+
+
 		if (Events::_cursor_locked)
 		{
 			camY += -Events::deltaY / Window::height * 2;
@@ -231,24 +241,24 @@ int main()
 			vec3 norm;
 			vec3 iend;
 			voxel* vox = chunks->rayCast(camera->position, camera->front, 10.0f, end, norm, iend);
-			if (vox != nullptr){
-				lineBatch->box(iend.x+0.5f, iend.y+0.5f, iend.z+0.5f, 1.005f,1.005f,1.005f, 0,0,0,0.5f);
+			if (vox != nullptr) {
+				lineBatch->box(iend.x + 0.5f, iend.y + 0.5f, iend.z + 0.5f, 1.005f, 1.005f, 1.005f, 0, 0, 0, 0.5f);
 
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_1))
 				{
 					int x = (int)iend.x;
 					int y = (int)iend.y;
 					int z = (int)iend.z;
-					chunks->set(x,y,z, 0);
-					Lighting::onBlockSet(x,y,z,0);
+					chunks->set(x, y, z, 0);
+					Lighting::onBlockSet(x, y, z, 0);
 				}
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_2))
 				{
-					int x = (int)(iend.x)+(int)(norm.x);
-					int y = (int)(iend.y)+(int)(norm.y);
-					int z = (int)(iend.z)+(int)(norm.z);
+					int x = (int)(iend.x) + (int)(norm.x);
+					int y = (int)(iend.y) + (int)(norm.y);
+					int z = (int)(iend.z) + (int)(norm.z);
 					chunks->set(x, y, z, choosenBlock);
-					Lighting::onBlockSet(x,y,z, choosenBlock);
+					Lighting::onBlockSet(x, y, z, choosenBlock);
 				}
 			}
 		}
@@ -289,14 +299,14 @@ int main()
 
 		// Draw VAO
 		shader->use();
-		shader->uniformMatrix("projview", camera->getProjection()*camera->getView());
+		shader->uniformMatrix("projview", camera->getProjection() * camera->getView());
 		texture->bind();
 		mat4 model(1.0f);
 		for (size_t i = 0; i < chunks->volume; i++)
 		{
 			Chunk* chunk = chunks->chunks[i];
 			Mesh* mesh = meshes[i];
-			model = glm::translate(mat4(1.0f), vec3(chunk->x * CHUNK_W +0.5f, chunk->y * CHUNK_H+0.5f, chunk->z * CHUNK_D+0.5f));
+			model = glm::translate(mat4(1.0f), vec3(chunk->x * CHUNK_W + 0.5f, chunk->y * CHUNK_H + 0.5f, chunk->z * CHUNK_D + 0.5f));
 			shader->uniformMatrix("model", model);
 			mesh->draw(GL_TRIANGLES);
 		}
@@ -305,7 +315,7 @@ int main()
 		crosshair->draw(GL_LINES);
 
 		linesShader->use();
-		linesShader->uniformMatrix("projview", camera->getProjection()*camera->getView());
+		linesShader->uniformMatrix("projview", camera->getProjection() * camera->getView());
 		glLineWidth(2.0f);
 		lineBatch->render();
 

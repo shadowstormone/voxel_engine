@@ -1,12 +1,4 @@
-/*
- * png_loading.cpp
- *
- *  Created on: Feb 10, 2020
- *      Author: MihailRis
- */
-
 #include "png_loading.h"
-
 #include <iostream>
 #include <GL/glew.h>
 #include <png.h>
@@ -15,19 +7,22 @@
 int _png_load(const char* file, int* width, int* height)
 {
     FILE *f;
+    &file[80];
     int is_png, bit_depth, color_type, row_bytes;
     png_infop info_ptr, end_info;
     png_uint_32 t_width, t_height;
     png_byte header[8], *image_data;
-    png_bytepp row_pointers;
+    png_bytepp row_pointers = 0;
     png_structp png_ptr;
     GLuint texture;
     int alpha;
 
-    if (!(f = fopen(file, "r")))
+    fopen_s(&f, file, "rb");
+    if (!f)
     {
         return 0;
     }
+
     fread(header, 1, 8, f);
     is_png = !png_sig_cmp( header, 0, 8);
     if (!is_png)
@@ -35,6 +30,7 @@ int _png_load(const char* file, int* width, int* height)
         fclose(f);
         return 0;
     }
+
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL,
         NULL, NULL);
     if (!png_ptr)
@@ -42,6 +38,7 @@ int _png_load(const char* file, int* width, int* height)
         fclose(f);
         return 0;
     }
+
     info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
@@ -50,6 +47,7 @@ int _png_load(const char* file, int* width, int* height)
         fclose(f);
         return 0;
     }
+
     end_info = png_create_info_struct(png_ptr);
     if (!end_info)
     {
@@ -58,12 +56,14 @@ int _png_load(const char* file, int* width, int* height)
         fclose(f);
         return 0;
     }
+
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(f);
         return 0;
     }
+
     png_init_io(png_ptr, f);
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
@@ -72,13 +72,14 @@ int _png_load(const char* file, int* width, int* height)
     *height = t_height;
     png_read_update_info(png_ptr, info_ptr);
     row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    image_data = (png_bytep) malloc(row_bytes * t_height * sizeof(png_byte));
+    image_data = (png_bytep) malloc(static_cast<__int64>(row_bytes) * t_height * sizeof(png_byte)); // somefunc(static_cast<__int64>(x) * 2)
     if (!image_data)
     {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(f);
         return 0;
     }
+
     row_pointers = (png_bytepp) malloc(t_height * sizeof(png_bytep));
     if (!row_pointers)
     {
@@ -87,10 +88,12 @@ int _png_load(const char* file, int* width, int* height)
         fclose(f);
         return 0;
     }
+
     for (unsigned int i = 0; i < t_height; ++i)
     {
-        row_pointers[t_height - 1 - i] = image_data + i * row_bytes;
+        row_pointers[t_height - 1 - i] = image_data + i * static_cast<__int64>(row_bytes);
     }
+
     png_read_image(png_ptr, row_pointers);
     switch (png_get_color_type(png_ptr, info_ptr))
     {
@@ -106,6 +109,7 @@ int _png_load(const char* file, int* width, int* height)
             png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
             return 0;
     }
+
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
